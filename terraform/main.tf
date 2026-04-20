@@ -1,3 +1,7 @@
+provider "aws" {
+  region = "us-east-1"
+}
+
 resource "aws_security_group" "sg" {
   name = "devops-sg"
 
@@ -36,8 +40,8 @@ resource "aws_instance" "ec2" {
               amazon-linux-extras install docker -y
               service docker start
 
-              docker pull <your-username>/devops-app:latest
-              docker run -d -p 8080:8080 <your-username>/devops-app:latest
+              docker pull <your-dockerhub-username>/devops-app:latest
+              docker run -d -p 8080:8080 --name devops-container <your-dockerhub-username>/devops-app:latest
               EOF
 
   tags = {
