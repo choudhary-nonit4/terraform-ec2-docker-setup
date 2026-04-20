@@ -1,7 +1,3 @@
-provider "aws" {
-  region = "us-east-1"
-}
-
 resource "aws_security_group" "sg" {
   name = "devops-sg"
 
@@ -28,13 +24,23 @@ resource "aws_security_group" "sg" {
 }
 
 resource "aws_instance" "ec2" {
-  ami           = "ami-0c02fb55956c7d316" # Amazon Linux 2 (us-east-1)
+  ami           = "ami-0c02fb55956c7d316"
   instance_type = "t3.micro"
   key_name      = "docker-ec2"
 
   vpc_security_group_ids = [aws_security_group.sg.id]
 
+  user_data = <<-EOF
+              #!/bin/bash
+              yum update -y
+              amazon-linux-extras install docker -y
+              service docker start
+              usermod -aG docker ec2-user
+
+              docker run -d -p 8080:80 nginx
+              EOF
+
   tags = {
-    Name = "devops-practice"
+    Name = "devops-auto"
   }
 }
