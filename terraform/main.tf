@@ -35,9 +35,9 @@ resource "aws_instance" "ec2" {
               yum update -y
               amazon-linux-extras install docker -y
               service docker start
-              usermod -aG docker ec2-user
 
-              docker run -d -p 8080:80 nginx
+              docker pull <your-username>/devops-app:latest
+              docker run -d -p 8080:8080 <your-username>/devops-app:latest
               EOF
 
   tags = {
