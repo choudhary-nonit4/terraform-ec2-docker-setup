@@ -16,11 +16,23 @@ jobs:
       - name: Login to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Build Docker Image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/devops-app:latest ./app
+      # - name: Build Docker Image
+      #   run: docker build -t ${{ secrets.DOCKER_USERNAME }}/devops-app:latest ./app
 
-      - name: Push Docker Image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/devops-app:latest
+      # - name: Push Docker Image
+      #   run: docker push ${{ secrets.DOCKER_USERNAME }}/devops-app:latest
+
+      - name: Build Backend Image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/backend:latest ./services/backend
+
+      - name: Push Backend Image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/backend:latest
+
+      - name: Build Gateway Image
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/api-gateway:latest ./services/api-gateway
+
+      - name: Push Gateway Image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/api-gateway:latest
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.6
@@ -69,7 +81,8 @@ jobs:
             git pull
 
             # Pull latest image
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/devops-app:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/backend:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/api-gateway:latest
 
             # Restart containers
             sudo /usr/local/bin/docker-compose down || true
