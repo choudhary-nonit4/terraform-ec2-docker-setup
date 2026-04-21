@@ -31,20 +31,29 @@ jobs:
           script: |
             set -e
 
-              echo "Starting deployment..."
+            echo "Starting deployment..."
 
             cd /home/ec2-user
 
+            # Install git
             sudo yum install -y git
 
-            # Ensure Docker
+            # Install Docker if missing
             if ! command -v docker &> /dev/null
             then
               sudo amazon-linux-extras install docker -y
             fi
 
+            # Start Docker
             sudo systemctl start docker || sudo service docker start
             sudo systemctl enable docker
+
+            # Install docker-compose (FORCE INSTALL)
+            sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+            sudo chmod +x /usr/local/bin/docker-compose
+
+            # Verify install (IMPORTANT DEBUG)
+            sudo /usr/local/bin/docker-compose version
 
             # Clone or pull repo
             if [ ! -d "devops-project" ]; then
@@ -57,9 +66,9 @@ jobs:
             # Pull latest image
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/devops-app:latest
 
-            # Restart containers (FIXED)
-            sudo docker compose down || true
-            sudo docker compose up -d
+            # Run using FULL PATH (IMPORTANT FIX)
+            sudo /usr/local/bin/docker-compose down || true
+            sudo /usr/local/bin/docker-compose up -d
 
             # Debug
             sudo docker ps
