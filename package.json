@@ -1,0 +1,24 @@
+{
+  "name": "terraform-ec2-docker-setup",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000t\u0000e\u0000r\u0000r\u0000a\u0000f\u0000o\u0000r\u0000m\u0000-\u0000e\u0000c\u00002\u0000-\u0000d\u0000o\u0000c\u0000k\u0000e\u0000r\u0000-\u0000s\u0000e\u0000t\u0000u\u0000p\u0000\r\u0000 \u0000",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/choudhary-nonit4/terraform-ec2-docker-setup.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/choudhary-nonit4/terraform-ec2-docker-setup/issues"
+  },
+  "homepage": "https://github.com/choudhary-nonit4/terraform-ec2-docker-setup#readme",
+  "devDependencies": {
+    "jest": "^30.3.0",
+    "supertest": "^7.2.2"
+  }
+}
