@@ -6,6 +6,7 @@ services:
     container_name: backend
     ports:
       - "3000:3000"
+    restart: always
 
   api-gateway:
     image: ${DOCKER_USERNAME}/api-gateway:latest
@@ -14,7 +15,8 @@ services:
       - "8080:8080"
     depends_on:
       - backend
-
+    restart: always
+    
 # services:
 #   app:
 #     image: learnernonit/devops-app:latest
