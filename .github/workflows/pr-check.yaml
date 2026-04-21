@@ -9,6 +9,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        service: [backend, api-gateway]
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -20,12 +24,11 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
-        working-directory: ./app
+        working-directory: ./services/${{ matrix.service }}
 
       - name: Run Tests
         run: npm test
-        working-directory: ./app
+        working-directory: ./services/${{ matrix.service }}
 
       - name: Build Check
-        run: |
-          docker build -t test-image ./app
+        run: docker build -t test-${{ matrix.service }} ./services/${{ matrix.service }}
