@@ -2,13 +2,13 @@ version: '3.8'
 
 services:
   backend:
-    build: ./services/backend
+    image: ${DOCKER_USERNAME}/backend:latest
     container_name: backend
     ports:
       - "3000:3000"
 
   api-gateway:
-    build: ./services/api-gateway
+    image: ${DOCKER_USERNAME}/api-gateway:latest
     container_name: api-gateway
     ports:
       - "8080:8080"

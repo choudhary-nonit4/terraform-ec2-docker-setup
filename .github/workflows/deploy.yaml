@@ -80,12 +80,12 @@ jobs:
             cd devops-project
             git pull
 
-            # Pull latest image
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/backend:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/api-gateway:latest
 
-            # Restart containers
             sudo /usr/local/bin/docker-compose down || true
+            sudo docker system prune -f || true
+
             sudo /usr/local/bin/docker-compose up -d
 
             # Debug output
