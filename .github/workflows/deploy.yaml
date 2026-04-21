@@ -31,8 +31,9 @@ jobs:
           script: |
             echo "Starting deployment..."
 
-            # Install required tools
-            sudo yum update -y
+            cd /home/ec2-user
+
+            # Install git
             sudo yum install -y git
 
             # Install Docker if not present
@@ -52,8 +53,7 @@ jobs:
               sudo chmod +x /usr/local/bin/docker-compose
             fi
 
-            # Clone repo if not exists
-            cd /home/ec2-user
+            # Clone or pull repo
             if [ ! -d "devops-project" ]; then
               git clone https://github.com/${{ github.repository }} devops-project
             fi
@@ -64,7 +64,7 @@ jobs:
             # Pull latest image
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/devops-app:latest
 
-            # Restart containers
+            # Restart containers properly
             sudo docker-compose down || true
             sudo docker-compose up -d
 
