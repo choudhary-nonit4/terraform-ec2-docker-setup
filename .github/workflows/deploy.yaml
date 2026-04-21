@@ -31,26 +31,41 @@ jobs:
           script: |
             echo "Starting deployment..."
 
-            # Ensure Docker is installed (safety)
+            # Install required tools
+            sudo yum update -y
+            sudo yum install -y git
+
+            # Install Docker if not present
             if ! command -v docker &> /dev/null
             then
-              echo "Docker not found. Installing..."
-              sudo yum update -y
               sudo amazon-linux-extras install docker -y
             fi
 
-            # Start Docker service
+            # Start Docker
             sudo systemctl start docker || sudo service docker start
             sudo systemctl enable docker
 
-            # Stop & remove old container
-            sudo docker stop devops-container || true
-            sudo docker rm devops-container || true
+            # Install docker-compose if not present
+            if ! command -v docker-compose &> /dev/null
+            then
+              sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
+            fi
+
+            # Clone repo if not exists
+            cd /home/ec2-user
+            if [ ! -d "devops-project" ]; then
+              git clone https://github.com/${{ github.repository }} devops-project
+            fi
+
+            cd devops-project
+            git pull
 
             # Pull latest image
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/devops-app:latest
 
-            # Run new container
-            sudo docker run -d -p 8080:8080 --name devops-container ${{ secrets.DOCKER_USERNAME }}/devops-app:latest
+            # Restart containers
+            sudo docker-compose down || true
+            sudo docker-compose up -d
 
             echo "Deployment completed!"
