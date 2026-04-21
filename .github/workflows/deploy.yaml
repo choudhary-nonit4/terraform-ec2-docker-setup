@@ -41,10 +41,8 @@ jobs:
           script: |
             echo "Starting deployment..."
 
-            # ✅ Export Docker username for compose
-            export DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
+            DOCKER_USERNAME=${{ secrets.DOCKER_USERNAME }}
 
-            # Go to project directory
             cd /home/ec2-user/devops-project
 
             # Pull latest images
@@ -54,10 +52,10 @@ jobs:
             # Stop old containers
             sudo /usr/local/bin/docker-compose down || true
 
-            # Cleanup (optional but useful)
+            # Cleanup
             sudo docker system prune -f || true
 
-            # Start new containers
-            sudo /usr/local/bin/docker-compose up -d
+            # 👇 PASS ENV INSIDE SUDO (THIS IS THE FIX)
+            sudo DOCKER_USERNAME=$DOCKER_USERNAME /usr/local/bin/docker-compose up -d
 
             echo "Deployment completed!"
